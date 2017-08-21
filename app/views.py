@@ -1,5 +1,5 @@
 from app import site
 
 @site.route('/')
-def show_entries():
+def index():
     return '200 ok'
