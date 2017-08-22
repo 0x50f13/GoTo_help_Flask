@@ -10,6 +10,10 @@ from models import answer as answer_model
 from flask_login import login_user, logout_user, current_user, login_required, login_manager
 import json
 import config
+from addons.search import Question_analyzer
+
+global searcher
+searcher=Question_analyzer()
 
 
 @site.before_request
@@ -89,6 +93,7 @@ def ask():
         return render_template("ask.html")
     else:
         Q = question(request.form["name"], 1, request.form["text"], request.form["tags"])
+        searcher.add_question(Q.name,Q.text,Q.tags,Q.id)
         Q.likes = 0
         current_user.questions.append(Q)
         db.session.add(Q)
@@ -156,3 +161,11 @@ def _answer(id):
 @login_required
 def topic(id):
     return render_template("topic.html", q=question.query.filter_by(id=id).first())
+
+@site.route("/bugs")
+def bugs():
+    return "They are everywhere.They wang to make your deadlines really dead.They want your program not to work.They are {{webapp.path}}.Ctf text:Here nothing intresting.Really.",418
+@site.route("/search/<what>")
+def search(what):
+    return render_template("search.html",searcher.find(what))
+
