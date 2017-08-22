@@ -92,8 +92,8 @@ def ask():
     if request.method == "GET":
         return render_template("ask.html")
     else:
-        Q = question(request.form["name"], 1, request.form["text"], request.form["tags"])
-        searcher.add_question(Q.name,Q.text,Q.tags,Q.id)
+        Q = question(request.form["name"],request.form["text"], request.form["tags"])
+        searcher.add_question(Q.name,Q.text,Q.tags,Q.id,None)
         Q.likes = 0
         current_user.questions.append(Q)
         db.session.add(Q)
@@ -112,9 +112,9 @@ def like_q(id):
         db.session.add(newLike)
         Q.likes += 1
         db.session.commit()
-        return "Liked"
+        return redirect("/profile")
     else:
-        return "You already liked it!"
+        return redirect("/profile")
 
 
 
@@ -127,9 +127,9 @@ def unlike_q(id):
         Q = question.query.filter_by(id=id).first()
         Q.likes -= 1
         db.session.commit()
-        return "ok"
+        return redirect("/profile")
     else:
-        return "err"
+        return redirect("/profile")
 
 
 
@@ -168,4 +168,18 @@ def bugs():
 @site.route("/search/<what>")
 def search(what):
     return render_template("search.html",searcher.find(what))
+@site.route("/delete/question/<int:id>")
+@login_required
+def delete(id):
+    if question.query.filter_by(id=id).first().author!=current_user:
+        abort(403)
+    q=question.query.filter_by(id=id).first()
+    for answer in q.answers:
+        db.session.delete(answer)
+    db.session.delete(q)
+
+    db.session.commit()
+
+    return redirect("/profile")
+
 

@@ -48,14 +48,15 @@ class question(db.Model):
     type = db.Column("type", db.Integer)
     text = db.Column("text", db.String(2048))
     likes = db.Column("likes_count",db.Integer)
+    tags = db.Column("tags",db.String(2048))
     author_id=db.Column(db.Integer,ForeignKey("users.user_id"))
     author = relationship("User",back_populates="questions")
     answers = relationship("answer")
-    def __init__(self,name,type,text,likes=0):
+    def __init__(self,name,text,tags):
         self.name=name
-        self.type=type
+        self.type=0
         self.text=text
-        self.likes=likes
+        self.tags=tags
 
 class answer(db.Model):
     #type 0 is question
@@ -66,16 +67,17 @@ class answer(db.Model):
     type = db.Column("type", db.Integer)
     text = db.Column("text", db.String(2048))
     likes = db.Column("likes_count",db.Integer)
+    tags = db.Column("tags",db.String(4096))
     is_selected = db.Column("selected",db.Boolean)
     question_id=db.Column(db.Integer,ForeignKey("qa.id"))
     author_id=db.Column(db.Integer,ForeignKey("users.user_id"))
     author = relationship("User",back_populates="answers")
 
-    def __init__(self,name,type,text,likes=0):
+    def __init__(self,name,text,tags):
         self.name=name
-        self.type=type
+        self.type=0
         self.text=text
-        self.likes=likes
+        self.tags=tags
 
 
 class likes(db.Model):

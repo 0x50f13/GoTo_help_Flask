@@ -5,10 +5,12 @@
 {{user.id}}
 {{user.username}}
 {{user.registered_on}}
+<a href="/ask">Ask something</a><a href="/logout">Logout</a>
 {% for x in user.questions %}
 <p><a href="/topic/{{x.id}}"><h1>{{x.name}}</h1></a></p><p>{{x.text}}></p><hr>
 Liked for {{x.likes}} times.
 Id is {{x.id}}
+<a href="/delete/question/{{x.id}}">Delete</a>
 <hr></p>
 {% endfor %}
 </body>
