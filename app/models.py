@@ -1,3 +1,4 @@
+
 import flask_login
 from __init__ import db,site
 from datetime import datetime
@@ -15,6 +16,7 @@ class User(db.Model):
     password = db.Column('password', db.String(256))
     registered_on = db.Column('registered_on', db.DateTime)
     questions=relationship("question")
+    answers=relationship("answer")
     #questions=relationship("anwser")
     def __init__(self, username, password, email):
         self.username = username
@@ -48,11 +50,33 @@ class question(db.Model):
     likes = db.Column("likes_count",db.Integer)
     author_id=db.Column(db.Integer,ForeignKey("users.user_id"))
     author = relationship("User",back_populates="questions")
+    answers = relationship("answer")
     def __init__(self,name,type,text,likes=0):
         self.name=name
         self.type=type
         self.text=text
         self.likes=likes
+
+class answer(db.Model):
+    #type 0 is question
+    #type 1 is answer
+    __tablename__ = "answers"
+    id = db.Column("id", db.Integer, primary_key=True)
+    name = db.Column("name", db.String(32))
+    type = db.Column("type", db.Integer)
+    text = db.Column("text", db.String(2048))
+    likes = db.Column("likes_count",db.Integer)
+    is_selected = db.Column("selected",db.Boolean)
+    question_id=db.Column(db.Integer,ForeignKey("qa.id"))
+    author_id=db.Column(db.Integer,ForeignKey("users.user_id"))
+    author = relationship("User",back_populates="answers")
+
+    def __init__(self,name,type,text,likes=0):
+        self.name=name
+        self.type=type
+        self.text=text
+        self.likes=likes
+
 
 class likes(db.Model):
     __tablename__="likes"
@@ -62,8 +86,5 @@ class likes(db.Model):
     def __init__(self,user_id,question_id):
         self.user_id=user_id
         self.question_id=question_id
-     
-
-
 db.create_all()
 db.session.commit()

@@ -6,7 +6,7 @@
 {{user.username}}
 {{user.registered_on}}
 {% for x in user.questions %}
-<p><h1>{{x.name}}</h1><p>{{x.text}}</p><hr>
+<p><a href="/topic/{{x.id}}"><h1>{{x.name}}</h1></a></p><p>{{x.text}}></p><hr>
 Liked for {{x.likes}} times.
 Id is {{x.id}}
 <hr></p>

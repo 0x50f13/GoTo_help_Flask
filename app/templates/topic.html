@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>{{q.name}}</h1>
+<h3>{{q.text}}</h3>
+<a href="/like/question/{{q.id}}">Like this</a>
+{% for a in q.answers %}
+
+<h2>{{a.name}}</h2>
+<h3>{{a.text}}</h3>
+
+{% endfor %}
+</body>
+</html>
