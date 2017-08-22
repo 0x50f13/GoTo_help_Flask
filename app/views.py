@@ -32,7 +32,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return Response('<p>Logged out</p>')#TODO:Redirect to index
+    return redirect('/')#DONE:Redirect to index
 
 
 # handle login failed
@@ -43,7 +43,7 @@ def page_not_found(e):
 @site.route('/register' , methods=['GET','POST'])
 def register():
     if request.method == 'GET':
-        return render_template('register.html')#TODO:Create register template
+        return render_template('register.html')DONE:Create register template
     user = User(request.form['username'] , request.form['password'],request.form['email'])
     db.session.add(user)
     db.session.commit()
@@ -52,3 +52,18 @@ def register():
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+@login_required
+@site.route('/profile')
+def profile():
+    return render_template("profile.html",user=current_user)
+@site.route('/profile/<int:id>')
+def profile_by_id(id):
+    user = User.query.filter_by(id=id).first()
+    return render_template("profile.html",user=user)
+@site.route("/ask",methods=["GET","POST"])
+def ask():
+    if request.method=="GET":
+        return render_template("ask.html")
+    else:
+
