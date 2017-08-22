@@ -1,7 +1,7 @@
 from __init__ import site,db,lm
 from flask import Response, redirect, url_for, request, session, abort,render_template,flash,g
 #from forms import LoginForm DEPRECATED
-from models import User,post
+from models import User,question,likes
 from flask_login import login_user, logout_user, current_user, login_required, login_manager
 import config
 @site.before_request
@@ -67,9 +67,33 @@ def ask():
     if request.method=="GET":
         return render_template("ask.html")
     else:
-        Post=post(request.form["name"],request.form["type"],request.form["text"])
-        current_user.posts.append(Post)
-        db.session.add(Post)
+        Q=question(request.form["name"],1,request.form["text"])
+        Q.likes=0
+        current_user.questions.append(Q)
+        db.session.add(Q)
         db.session.commit()
         return redirect("/profile")
-
+@login_required
+@site.route("/like/question/<int:id>")
+def  like_q(id):
+    like=likes.query.filter_by(user_id=current_user.id,question_id=id).first()
+    if like is None:
+        Q=question.query.filter_by(id=id).first()
+        newLike=likes(current_user.id,id)
+        db.session.add(newLike)
+        Q.likes += 1
+        db.session.commit()
+        return "Liked"
+    else:
+        return "You already liked it!"
+@site.route("/unlike/question/<int:id>")
+def unlike_q(id):
+    like = likes.query.filter_by(user_id=current_user.id, question_id=id).first()
+    if like is not None:
+         likes.query.filter_by(user_id=current_user.id,question_id=id).delete()
+         Q = question.query.filter_by(id=id).first()
+         Q.likes -= 1
+         db.session.commit()
+         return "ok"
+    else:
+         return "err"

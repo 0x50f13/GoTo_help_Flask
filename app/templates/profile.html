@@ -5,8 +5,11 @@
 {{user.id}}
 {{user.username}}
 {{user.registered_on}}
-{% for x in user.posts %}
-<p><h1>{{x.name}}</h1><p>{{x.text}}</p></p>
+{% for x in user.questions %}
+<p><h1>{{x.name}}</h1><p>{{x.text}}</p><hr>
+Liked for {{x.likes}} times.
+Id is {{x.id}}
+<hr></p>
 {% endfor %}
 </body>
 </html>

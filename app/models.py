@@ -14,8 +14,8 @@ class User(db.Model):
     username = db.Column('username', db.String(256), unique=True, index=True)
     password = db.Column('password', db.String(256))
     registered_on = db.Column('registered_on', db.DateTime)
-    posts=relationship("post")
-
+    questions=relationship("question")
+    #questions=relationship("anwser")
     def __init__(self, username, password, email):
         self.username = username
         self.password = password
@@ -37,7 +37,7 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
-class post(db.Model):
+class question(db.Model):
     #type 0 is question
     #type 1 is answer
     __tablename__ = "qa"
@@ -45,15 +45,24 @@ class post(db.Model):
     name = db.Column("name", db.String(32))
     type = db.Column("type", db.Integer)
     text = db.Column("text", db.String(2048))
-    likes = db.Column("like_count", db.Integer)
+    likes = db.Column("likes_count",db.Integer)
     author_id=db.Column(db.Integer,ForeignKey("users.user_id"))
-    author = relationship("User",back_populates="posts")
+    author = relationship("User",back_populates="questions")
     def __init__(self,name,type,text,likes=0):
         self.name=name
         self.type=type
         self.text=text
         self.likes=likes
 
+class likes(db.Model):
+    __tablename__="likes"
+    user_id=db.Column("user_id",db.Integer)
+    question_id=db.Column("question_id",db.Integer)
+    __mapper_args__ = {"primary_key":(user_id, question_id)}
+    def __init__(self,user_id,question_id):
+        self.user_id=user_id
+        self.question_id=question_id
+     
 
 
 db.create_all()
