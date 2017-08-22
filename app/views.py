@@ -1,7 +1,7 @@
 from __init__ import site,db,lm
 from flask import Response, redirect, url_for, request, session, abort,render_template,flash,g
 #from forms import LoginForm DEPRECATED
-from models import User
+from models import User,post
 from flask_login import login_user, logout_user, current_user, login_required, login_manager
 import config
 @site.before_request
@@ -43,7 +43,7 @@ def page_not_found(e):
 @site.route('/register' , methods=['GET','POST'])
 def register():
     if request.method == 'GET':
-        return render_template('register.html')DONE:Create register template
+        return render_template('register.html')#DONE:Create register template
     user = User(request.form['username'] , request.form['password'],request.form['email'])
     db.session.add(user)
     db.session.commit()
@@ -61,9 +61,15 @@ def profile():
 def profile_by_id(id):
     user = User.query.filter_by(id=id).first()
     return render_template("profile.html",user=user)
+@login_required
 @site.route("/ask",methods=["GET","POST"])
 def ask():
     if request.method=="GET":
         return render_template("ask.html")
     else:
+        Post=post(request.form["name"],request.form["type"],request.form["text"])
+        current_user.posts.append(Post)
+        db.session.add(Post)
+        db.session.commit()
+        return redirect("/profile")
 
