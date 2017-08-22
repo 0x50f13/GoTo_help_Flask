@@ -5,7 +5,7 @@
 {{user.id}}
 {{user.username}}
 {{user.registered_on}}
-{% for x in user.questions %}
+{% for x in user.posts %}
 <p><h1>{{x.name}}</h1><p>{{x.text}}</p></p>
 {% endfor %}
 </body>
