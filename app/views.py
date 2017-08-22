@@ -1,4 +1,4 @@
-from app import site,db,lm
+from __init__ import site,db,lm
 from flask import Response, redirect, url_for, request, session, abort,render_template,flash,g
 #from forms import LoginForm DEPRECATED
 from models import User
@@ -11,9 +11,11 @@ def before_request():
 
 @site.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html",user=current_user)
 @site.route('/login',methods=['GET','POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect("/")
     if request.method == 'GET':
         return render_template('login.html')
     username = request.form['username']

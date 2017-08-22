@@ -1,5 +1,5 @@
 import flask_login
-from app import db
+from __init__ import db
 from datetime import datetime
 
 class User(db.Model):
@@ -29,6 +29,7 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.username)
+
 
 db.create_all()
 db.session.commit()
